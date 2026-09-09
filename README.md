@@ -94,10 +94,17 @@ computador velho, não em você. O combo acima de 3 também o chama, com
 
 **Sobre a arte** (`mascote.webp`): veio em 2000x2000 com quase metade de
 margem vazia e **sem canal alfa** — fundo branco chapado. Foi recortada na
-caixa do personagem e reduzida para 520x358, de 188 KB para 32 KB. O branco
-some por `mix-blend-mode: multiply`, que contra o fundo claro da página
-apaga o branco e preserva o traço, a sombra e as cores. É por isso que ele
-parece impresso na página em vez de colado num quadrado branco.
+caixa do personagem, reduzida para 520x358 e **recebeu canal alfa de
+verdade**: 42% dos pixels são totalmente transparentes. 47 KB, contra os 188
+KB do original.
+
+O recorte não podia ser "branco vira transparente", senão o corpo branco
+dele viraria buraco. É um preenchimento a partir das quatro bordas, que só
+alcança o fundo — o branco de dentro está cercado pelo contorno preto e
+nunca é atingido. A sombra da arte, que o preenchimento alcança, virou um
+azul-acinzentado translúcido em vez de sumir, para continuar sendo sombra em
+qualquer cor de página. WebP com alfa em vez de PNG: mesma transparência,
+arquivo bem menor.
 
 ## O ambiente é vivo
 
@@ -127,6 +134,19 @@ consegue:
 
 Depois disso todo push na `main` republica sozinho, sem build e sem workflow.
 O `.nojekyll` está aí só para o Pages servir os arquivos como estão.
+
+## Trocar de painel
+
+Clicar em outro projeto não troca o conteúdo de estalo: as colunas mostram
+**esqueletos** por 380 ms — blocos no formato do cartão com uma faixa de
+brilho atravessando — e então os cartões reais entram escalonados, 45 ms um
+atrás do outro.
+
+A quantidade de esqueletos por coluna é a quantidade real de tarefas do
+projeto que você escolheu (limitada a 4), então a transição já tem a forma
+do que vem. A faixa de brilho anda por `transform`, não por
+`background-position`: uma é composta pela GPU, a outra repintaria a cada
+quadro. Com `prefers-reduced-motion` a troca é imediata, sem esqueleto.
 
 ## Desempenho das animações
 

@@ -250,7 +250,7 @@
   @media (prefers-reduced-motion: reduce) {
     .holo, .iris, .pill.on, .cintila, .aura i,
     .ambiente i, .vitrine .blob, .vitrine .grade, .tv .led,
-    .mascote .pula, .mascote img.rodando { animation: none; }
+    .mascote .pula, .mascote img.rodando, .osso::after, .cartao.entrando { animation: none; }
     .ambiente .faisca { opacity: .7; }
     .fantasma .cartao { animation: none; transform: rotate(-2deg) scale(1.03); }
     body.tremendo .folha { animation: none; }
@@ -346,6 +346,33 @@
     color: var(--tinta-fraca); border-bottom: 1px solid var(--borda-forte); padding-bottom: 2px;
   }
   .limpar:hover { color: var(--rosa); border-color: var(--rosa); }
+
+  .osso {
+    position: relative; overflow: hidden; height: 62px; margin-bottom: 8px;
+    border-radius: 9px; border: 1px solid #dfeaf3; border-left: 5px solid #dbe9f3;
+    background: linear-gradient(180deg, #f2f8fd, #e6f0f8);
+  }
+  .osso i, .osso b {
+    position: absolute; left: 14px; border-radius: 5px; background: #d9e8f3;
+  }
+  .osso i { top: 15px; width: 58px; height: 7px; }
+  .osso b { top: 31px; width: var(--w, 62%); height: 11px; background: #e6f1f9; }
+  /* a faixa de brilho anda por transform, não por background-position:
+     translate é composto pela GPU, o outro repintaria a cada quadro */
+  .osso::after {
+    content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 45%;
+    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.95), rgba(255,255,255,0));
+    animation: varrer 1.05s linear infinite;
+  }
+  @keyframes varrer {
+    from { transform: translateX(-120%); }
+    to   { transform: translateX(320%); }
+  }
+  .cartao.entrando { animation: entrar .34s cubic-bezier(.2, .9, .3, 1) backwards; }
+  @keyframes entrar {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: none; }
+  }
 
   .cartao {
     position: relative; display: flex; align-items: flex-start; gap: 8px;
@@ -542,9 +569,6 @@
   }
   .mascote img {
     display: block; width: 100%; height: auto; cursor: pointer; pointer-events: auto;
-    /* a arte veio com fundo branco chapado, sem canal alfa; multiply apaga o
-       branco contra o fundo claro da página e preserva o traço */
-    mix-blend-mode: multiply;
     transform: rotate(-2deg);
   }
   .mascote img.rodando { animation: rodopiar 1.15s cubic-bezier(.42, 0, .22, 1); }
@@ -1074,7 +1098,7 @@ function desenharProjetos() {
     const b = document.createElement('button');
     b.className = 'pill' + (dados.filtro === valor ? ' on' : '');
     b.textContent = rotulo;
-    b.onclick = () => { dados.filtro = valor; salvar(); desenhar(); };
+    b.onclick = () => trocarPainel(valor);
     return b;
   };
   alvo.append(pill('Todos', 'todos'));
@@ -1123,6 +1147,42 @@ function desenharProjetos() {
   };
 
   acoes.append(ren, exc);
+}
+
+/* ---------- troca de painel ---------- */
+let entrarCartoes = false;
+let trocaPendente = null;
+
+function esqueleto() {
+  const quadro = document.getElementById('quadro');
+  quadro.innerHTML = '';
+  COLUNAS.forEach(([id, rotulo, ac], i) => {
+    const quantos = Math.min(4, visiveis().filter(t => t.coluna === id).length) || 1;
+    const col = document.createElement('section');
+    col.className = 'coluna painel';
+    col.style.setProperty('--ac', ac);
+    col.innerHTML =
+      `<h3><span class="indice">0${i + 1}</span>${rotulo}<span class="risca"></span></h3>` +
+      Array.from({ length: quantos }, () =>
+        `<div class="osso"><i></i><b style="--w:${45 + Math.random() * 40 | 0}%"></b></div>`).join('');
+    quadro.append(col);
+  });
+}
+
+function trocarPainel(valor) {
+  if (dados.filtro === valor) return;
+  dados.filtro = valor;
+  salvar();
+  desenharProjetos();
+  desenharMedidor();
+  clearTimeout(trocaPendente);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { desenharQuadro(); return; }
+  esqueleto();
+  trocaPendente = setTimeout(() => {
+    entrarCartoes = true;
+    desenharQuadro();
+    entrarCartoes = false;
+  }, 380);
 }
 
 /* ---------- medidor ---------- */
@@ -1186,7 +1246,14 @@ function desenharQuadro() {
       col.append(vazio);
     }
 
-    tarefas.forEach((t, n) => col.append(cartao(t, i, todos, tarefas[n + 1] && tarefas[n + 1].id)));
+    tarefas.forEach((t, n) => {
+      const c = cartao(t, i, todos, tarefas[n + 1] && tarefas[n + 1].id);
+      if (entrarCartoes) {
+        c.classList.add('entrando');
+        c.style.animationDelay = n * 45 + 'ms';
+      }
+      col.append(c);
+    });
 
     const nova = document.createElement('input');
     nova.className = 'nova';
