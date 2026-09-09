@@ -2,8 +2,9 @@
 
 Kanban para anotar as tarefas dos meus projetos.
 
-Visual aero-tech: painéis de vidro escuro sobre um zoom-burst de luz, cromo
-líquido, curvas vetoriais, tipografia de HUD e aberração cromática.
+Estética Y2K: estrutura de página de 2003 — pills envidraçadas, barcode,
+painéis com barra de título — com cromo, gradiente holográfico e sparkles por
+cima.
 
 **No ar:** https://fabiomiranda04.github.io/organizer/ — depois de ligar o
 Pages uma vez (veja *Publicação*).
@@ -11,22 +12,27 @@ Pages uma vez (veja *Publicação*).
 Um arquivo. Sem build, sem dependência, sem servidor: o `index.html` sozinho
 já é o app — abre direto no navegador se você quiser.
 
+## Feito para computador
+
+Largura fixa de 1180px, sem layout responsivo — foi decisão sua, e por isso
+não há nenhuma media query de tela pequena. Em celular a página não quebra,
+só pede zoom/rolagem lateral.
+
 ## Como funciona
 
-- **Projetos** são os chips do topo. `+ projeto` cria ali mesmo, digitando no
-  chip; com um selecionado aparecem `renomear` e `excluir`.
-- **Colunas**: Backlog → Fazendo → Feito. A barra do cabeçalho mostra quanto
-  do que está à vista já foi feito.
+- **Projetos** são as pills da barra. `+ projeto` cria ali mesmo, digitando;
+  o projeto ativo fica holográfico e vira o título da faixa, onde aparecem
+  `renomear` e `excluir`.
+- **Colunas**: Backlog → Fazendo → Feito. Os números `01/02/03` estão ali
+  porque isso é mesmo uma sequência, não enfeite.
+- **Progresso** no widget da direita: cada célula acesa mostra uma fatia
+  diferente do espectro.
 - **Nova tarefa**: digite no campo do fim da coluna e tecle Enter.
-- **Mover**: arraste o cartão, ou use as setas `‹ ›` dele — é o que funciona
-  no celular, onde arrastar não vai.
+- **Mover**: arraste o cartão, ou use as setas `‹ ›` que aparecem nele.
 - **Editar**: clique no texto do cartão e escreva. Apagar o texto todo apaga
   a tarefa.
 - **Apagar**: o `×` do cartão. Em *Feito* há um `limpar` que varre a coluna.
 - **Todos**: mostra os projetos juntos, cada cartão com a etiqueta do seu.
-
-No celular vira uma coluna só. Dá para adicionar à tela de início pelo
-Safari/Chrome e ele abre em tela cheia, como app.
 
 ## Onde os dados ficam
 
@@ -34,9 +40,8 @@ No `localStorage` **deste navegador**, na chave `organizer.kanban.v1`. Nada
 sobe para servidor nenhum — ou seja: **não sincroniza entre aparelhos** e some
 se você limpar os dados do site.
 
-Por isso existem `exportar` e `importar` no cabeçalho: exportar baixa um
-`.json` com tudo, importar substitui o que está salvo. É o backup, e é
-também como levar as tarefas do computador para o celular.
+Por isso existem `exportar` e `importar` no banner: exportar baixa um `.json`
+com tudo, importar substitui o que está salvo. É o backup.
 
 ## Publicação
 
@@ -50,13 +55,18 @@ consegue:
 Depois disso todo push na `main` republica sozinho, sem build e sem workflow.
 O `.nojekyll` está aí só para o Pages servir os arquivos como estão.
 
-## Sobre as fontes
+## Notas de design
 
-**Space Grotesk** no texto e **JetBrains Mono** em tudo que é rótulo, número
-e etiqueta — é a mono que dá o ar de painel técnico. Ambas vêm do Google
-Fonts; se não carregarem (sem internet, rede bloqueada), o app cai para as
-fontes do sistema e continua funcionando igual.
-
-O fundo é todo CSS/SVG — nenhuma imagem para baixar. As animações respeitam
-`prefers-reduced-motion`: quem pede menos movimento no sistema recebe a cena
-parada.
+- **Fontes**: `Archivo Black` no cromo do título, `Nunito Sans` no texto e
+  `Silkscreen` (pixel) só nos rótulos fixos — pixel não tem acento, então
+  nada que o usuário escreve passa por ela. Vêm do Google Fonts; se não
+  carregarem, o app cai para as fontes do sistema e continua funcionando.
+- **Cromo** é gradiente com faixa escura na linha do horizonte mais contorno
+  fino, recortado no texto. **Holográfico** é um gradiente de seis paradas
+  girando o matiz; nas tiras dos cartões ele vai em tamanho natural para o
+  arco-íris aparecer inteiro, e nas células do medidor cada uma pega uma
+  fatia distinta.
+- Fundo, blob, bolhas, wireframe, lens flare, barcode e sparkles são todos
+  CSS/SVG — nenhuma imagem para baixar.
+- Animação respeita `prefers-reduced-motion`, e o foco de teclado tem anel
+  visível.
