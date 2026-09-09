@@ -46,11 +46,18 @@ só pede zoom/rolagem lateral.
 
 ## Quando uma tarefa chega em Feito
 
-A tela inteira comemora, de propósito exagerado: tremor, um flash, três ondas
-de choque em cores separadas saindo de onde você soltou o cartão, raios,
-confete de estrelinhas e CDs, e um grito cromado ("FEITO!", "MANDOU BEM!"…)
-entrando em escala. Junto vai um som sintetizado na hora pelo Web Audio —
-nenhum arquivo de áudio no repositório.
+A tela inteira reage, de propósito exagerado: tremor, um flash, três ondas de
+choque saindo de onde você soltou o cartão, raios, confete de estrelinhas,
+CDs e respingos de spray, e um adesivo de rua entrando torto — `CLEAR!`,
+`TAGGED`, `FRESH`, `S-RANK`, `JET SET`, `NEXT!`, `RIDE ON`.
+
+**Não tem elogio, tem placar.** Em Jet Set Radio nada te parabeniza: te dá
+rank. Então sai `+100`, e concluir de novo em até 7 segundos acumula
+`2x COMBO`, `3x COMBO`… com os pontos multiplicando e o tom do som subindo
+um semitom por passo, como contador de fliperama.
+
+O som é sintetizado na hora pelo Web Audio — chiado de lata de spray, baque
+grave e naipe de sopro. Nenhum arquivo de áudio no repositório.
 
 O botão `🔊 som` no banner desliga só o áudio; a preferência fica salva junto
 com as tarefas. Quem tem `prefers-reduced-motion` ligado no sistema recebe
@@ -58,6 +65,14 @@ só o som, sem a parte visual.
 
 O flash é **um** e não uma sequência: piscar repetido em tela cheia é gatilho
 de crise fotossensível.
+
+## O ambiente é vivo
+
+Atrás dos painéis flutuam bolhas subindo, faíscas piscando e mini-CDs
+holográficos vagando e girando. Como os painéis são de vidro, o
+`backdrop-filter` desfoca tudo que passa por trás deles de graça — o
+movimento aparece borrado sob o vidro e nítido nas frestas. O blob do banner
+respira mudando o próprio contorno, e o globo de arame gira devagar.
 
 ## Onde os dados ficam
 
