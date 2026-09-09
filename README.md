@@ -150,12 +150,38 @@ quadro. Com `prefers-reduced-motion` a troca é imediata, sem esqueleto.
 
 ## Desempenho das animações
 
+### Por que estava pesado no Chrome e leve no Firefox
+
+Sintoma real: travava no Chrome, rodava liso no Firefox. A causa era o
+`backdrop-filter`.
+
+No Chrome, um elemento com `backdrop-filter` cria um *backdrop root*: tudo
+que está atrás dele **perde a composição independente** e precisa ser
+rasterizado e desfocado de novo sempre que muda. Havia 5 painéis de vidro
+cobrindo quase a tela inteira e 15 bolhas, faíscas e discos se movendo o
+tempo todo atrás deles — ou seja, a tela quase inteira era re-desfocada a
+cada quadro. O Firefox implementa o mesmo efeito pelo WebRender de um jeito
+que não cai nesse padrão, e por isso ia bem.
+
+**O `backdrop-filter` saiu por completo.** O que ele fazia visualmente era
+desfocar um degradê já suave — quase nada. E o que ele fazia de fato era
+desfocar as bolhas que passavam atrás do vidro; isso foi recuperado
+borrando **as próprias bolhas** com um `filter` estático. Filtro fixo em
+elemento que só anima `transform` vira textura em cache, movida pelo
+compositor: sai de graça, e vale em qualquer navegador.
+
+Junto disso: o blob do banner deixou de animar `filter` e `transform` ao
+mesmo tempo (filtro animado tira o transform do compositor no Chrome), e o
+raio de desfoque das manchas de fundo caiu de 70px para 48px.
+
+### Antes disso
+
 Medido no próprio app, contando elementos com `backdrop-filter` e com
 animação ativa:
 
 | | antes | depois |
 |---|---|---|
-| elementos com `backdrop-filter` | 23 | **5** |
+| elementos com `backdrop-filter` | 23 | 5 → **0** |
 | elementos animados | 36 | **28** |
 
 O que estava caro e o que mudou:
