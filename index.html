@@ -197,7 +197,7 @@
   .cintila { animation: cintilar 3.4s ease-in-out infinite; transform-origin: center; }
   @keyframes cintilar { 0%, 100% { opacity: .95; transform: scale(1); } 50% { opacity: .45; transform: scale(.82); } }
   @media (prefers-reduced-motion: reduce) {
-    .holo, .iris, .pill.on, .cintila, .cartao::before, .aura i { animation: none; }
+    .holo, .iris, .pill.on, .cintila, .aura i { animation: none; }
   }
 
   /* ---------- barra de projetos ---------- */
@@ -307,10 +307,11 @@
   .cartao::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
     border-radius: 9px 0 0 9px;
-    background: var(--holo-forte);
-    animation: matiz 9s linear infinite;
+    background: linear-gradient(180deg,
+      color-mix(in srgb, var(--cor) 72%, #fff), var(--cor) 55%,
+      color-mix(in srgb, var(--cor) 82%, #000));
+    box-shadow: inset -1px 0 0 rgba(255,255,255,.5);
   }
-  @keyframes matiz { to { filter: hue-rotate(360deg); } }
   .cartao:hover {
     transform: translateY(-2px);
     border-color: var(--borda-forte);
@@ -328,7 +329,7 @@
     box-shadow: 0 0 0 2px rgba(43,127,192,.35);
   }
   .cartao.feito { background: linear-gradient(180deg, #fbfffd, #eefaf5); border-color: #cfeade; }
-  .cartao.feito::before { background: linear-gradient(180deg, #7fe6bf, var(--menta)); animation: none; }
+  .cartao.feito::before { background: linear-gradient(180deg, #7fe6bf, var(--menta)); }
   .cartao.feito .texto span[contenteditable] { color: #6d9a8b; text-decoration: line-through; }
 
   .etiqueta {
@@ -467,10 +468,12 @@ function carregar() {
 function salvar() { localStorage.setItem(CHAVE, JSON.stringify(dados)); }
 function novoId() { return Math.random().toString(36).slice(2, 10); }
 function esc(s) { return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+// paleta fixa em vez de hash: hash de id vizinho cai no mesmo matiz e os
+// projetos saem todos da mesma cor
+const PALETA = ['#f0569e', '#8b6cf0', '#2b9fe0', '#23c3a0', '#f2a03c', '#e0574f', '#6cc04a', '#b45ee0'];
 function cor(id) {
-  let h = 0;
-  for (const c of id) h = (h * 31 + c.charCodeAt(0)) % 360;
-  return `hsl(${h} 72% 60%)`;
+  const i = dados.projetos.findIndex(p => p.id === id);
+  return PALETA[(i < 0 ? 0 : i) % PALETA.length];
 }
 function visiveis() {
   return dados.filtro === 'todos' ? dados.tarefas : dados.tarefas.filter(t => t.projeto === dados.filtro);
@@ -661,11 +664,13 @@ function cartao(t, i, mostrarEtiqueta, proximo) {
   el.className = 'cartao' + (t.coluna === 'feito' ? ' feito' : '');
   el.draggable = true;
 
+  el.style.setProperty('--cor', cor(t.projeto));
+
   const corpo = document.createElement('div');
   corpo.className = 'texto';
   if (mostrarEtiqueta) {
     const p = dados.projetos.find(p => p.id === t.projeto);
-    if (p) corpo.innerHTML = `<span class="etiqueta" style="--cor:${cor(p.id)}">${esc(p.nome)}</span>`;
+    if (p) corpo.innerHTML = `<span class="etiqueta">${esc(p.nome)}</span>`;
   }
   const linha = document.createElement('span');
   linha.contentEditable = 'false';

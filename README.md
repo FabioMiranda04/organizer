@@ -38,6 +38,9 @@ só pede zoom/rolagem lateral.
   apaga a tarefa.
 - **Apagar**: o `×` do cartão. Em *Feito* há um `limpar` que varre a coluna.
 - **Todos**: mostra os projetos juntos, cada cartão com a etiqueta do seu.
+- **A tira colorida do cartão é a cor do projeto** — vem de uma paleta fixa
+  de oito cores, na ordem em que os projetos foram criados. Em *Feito* ela
+  passa a verde, para a coluna se ler de longe.
 
 ## Onde os dados ficam
 
