@@ -68,16 +68,31 @@ de crise fotossensível.
 
 ## A tevê do canto
 
-Uma CRT de plástico no canto inferior direito passando gatos aleatórios, com
-legenda de meme por cima. Clique na tela para trocar de canal; sozinha ela
-troca a cada 15 segundos. Entre um gato e outro entra chuvisco de verdade —
-ruído desenhado pixel a pixel num `<canvas>` de 96x72, com barra de
+Uma CRT de plástico no canto inferior direito passando gatos aleatórios, e só
+os gatos — sem legenda por cima. Clique na tela para trocar de canal; sozinha
+ela troca a cada 15 segundos. Entre um gato e outro entra chuvisco de verdade
+— ruído desenhado pixel a pixel num `<canvas>` de 96x72, com barra de
 rolagem, esticado com `image-rendering: pixelated`.
 
 **Ela busca as imagens do `cataas.com`** (Cat as a Service — grátis, sem
 chave). É a única coisa no app que sai para a internet; se o serviço estiver
 fora, a tela mostra `SEM SINAL` e o resto do app segue igual. O botão
 `📺 tv` no banner desliga, e desligada ela não faz requisição nenhuma.
+
+## O mascote
+
+Um monitor de tubo de pernas curtas, com teclado de escudo e pá de espada,
+desenhado em SVG — nenhuma imagem, então ele escala sem borrar e pesa quase
+nada. Aparece no canto inferior esquerdo alguns segundos, de tempos em
+tempos, gingando. Clicar nele faz o golpe e ele fala de novo.
+
+O que ele fala são **mensagens de sistema**, não recados para você:
+`C:\> defrag backlog`, `640K é memória suficiente`, `não desligue o
+computador`. Elogio e cutucão dão vergonha alheia — a piada está no
+computador velho, não em você.
+
+Ele também aparece sozinho quando o combo passa de 3, com `buffer overflow`.
+O botão `🖥️ mascote` no banner o aposenta.
 
 ## O ambiente é vivo
 
