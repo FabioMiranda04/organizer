@@ -3,7 +3,8 @@
 Kanban para anotar as tarefas dos meus projetos.
 Visual Frutiger Aero: céu, vidro, bolhas e botões brilhantes.
 
-**No ar:** https://fabiomiranda04.github.io/organizer/
+**No ar:** https://fabiomiranda04.github.io/organizer/ — depois de ligar o
+Pages uma vez (veja *Publicação*).
 
 Um arquivo. Sem build, sem dependência, sem servidor: o `index.html` sozinho
 já é o app — abre direto no navegador se você quiser.
@@ -37,9 +38,15 @@ também como levar as tarefas do computador para o celular.
 
 ## Publicação
 
-Todo push na `main` roda `.github/workflows/pages.yml`, que liga o GitHub
-Pages (na primeira vez) e publica a raiz do repositório. Não há passo de
-build para dar errado.
+GitHub Pages servindo a raiz da `main`. Ligar isso é um passo manual e único
+— só o dono do repositório pode criar o site, nem o token do Actions
+consegue:
+
+> **Settings → Pages → Source: _Deploy from a branch_ → Branch: `main` /
+> `(root)` → Save**
+
+Depois disso todo push na `main` republica sozinho, sem build e sem workflow.
+O `.nojekyll` está aí só para o Pages servir os arquivos como estão.
 
 ## Sobre a fonte
 
