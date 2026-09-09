@@ -81,18 +81,23 @@ fora, a tela mostra `SEM SINAL` e o resto do app segue igual. O botão
 
 ## O mascote
 
-Um monitor de tubo de pernas curtas, com teclado de escudo e pá de espada,
-desenhado em SVG — nenhuma imagem, então ele escala sem borrar e pesa quase
-nada. Aparece no canto inferior esquerdo alguns segundos, de tempos em
-tempos, gingando. Clicar nele faz o golpe e ele fala de novo.
+Um monitor de tubo de pernas curtas, com teclado de escudo e pá de espada.
+Fica **sempre** no canto inferior esquerdo, pequeno, boiando de leve; de
+tempos em tempos dá um rodopio completo. Clicar nele faz rodopiar na hora e
+ele fala.
 
 O que ele fala são **mensagens de sistema**, não recados para você:
 `C:\> defrag backlog`, `640K é memória suficiente`, `não desligue o
 computador`. Elogio e cutucão dão vergonha alheia — a piada está no
-computador velho, não em você.
+computador velho, não em você. O combo acima de 3 também o chama, com
+`buffer overflow`. O botão `🖥️ mascote` no banner o aposenta.
 
-Ele também aparece sozinho quando o combo passa de 3, com `buffer overflow`.
-O botão `🖥️ mascote` no banner o aposenta.
+**Sobre a arte** (`mascote.webp`): veio em 2000x2000 com quase metade de
+margem vazia e **sem canal alfa** — fundo branco chapado. Foi recortada na
+caixa do personagem e reduzida para 520x358, de 188 KB para 32 KB. O branco
+some por `mix-blend-mode: multiply`, que contra o fundo claro da página
+apaga o branco e preserva o traço, a sombra e as cores. É por isso que ele
+parece impresso na página em vez de colado num quadrado branco.
 
 ## O ambiente é vivo
 

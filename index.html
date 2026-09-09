@@ -250,7 +250,7 @@
   @media (prefers-reduced-motion: reduce) {
     .holo, .iris, .pill.on, .cintila, .aura i,
     .ambiente i, .vitrine .blob, .vitrine .grade, .tv .led,
-    .mascote .pula, .mascote svg.golpe { animation: none; }
+    .mascote .pula, .mascote img.rodando { animation: none; }
     .ambiente .faisca { opacity: .7; }
     .fantasma .cartao { animation: none; transform: rotate(-2deg) scale(1.03); }
     body.tremendo .folha { animation: none; }
@@ -535,30 +535,30 @@
 
   /* ---------- mascote ---------- */
   .mascote {
-    position: fixed; left: 18px; bottom: 4px; z-index: 51; width: 138px;
+    position: fixed; left: 10px; bottom: 2px; z-index: 51; width: 124px;
     pointer-events: none;
-    transform: translate3d(-150%, 12px, 0);
-    transition: transform .75s cubic-bezier(.2, 1.15, .3, 1);
   }
-  .mascote.entrou { transform: translate3d(0, 0, 0); }
-  .mascote .pula { animation: gingar 2.8s ease-in-out infinite; }
-  @keyframes gingar {
-    0%, 100% { transform: translateY(0) rotate(-1.2deg); }
-    50%      { transform: translateY(-8px) rotate(1.6deg); }
+  .mascote[hidden] { display: none; }
+  .mascote .pula { animation: boiar 4.4s ease-in-out infinite; }
+  @keyframes boiar {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-11px); }
   }
-  .mascote svg {
+  .mascote img {
     display: block; width: 100%; height: auto; cursor: pointer; pointer-events: auto;
-    filter: drop-shadow(0 12px 18px rgba(25, 80, 120, .35));
+    /* a arte veio com fundo branco chapado, sem canal alfa; multiply apaga o
+       branco contra o fundo claro da página e preserva o traço */
+    mix-blend-mode: multiply;
+    transform: rotate(-2deg);
   }
-  .mascote svg.golpe { animation: golpear .6s ease-in-out; }
-  @keyframes golpear {
-    0%   { transform: rotate(0deg); }
-    28%  { transform: rotate(-13deg) translateY(-7px); }
-    58%  { transform: rotate(10deg); }
-    100% { transform: rotate(0deg); }
+  .mascote img.rodando { animation: rodopiar 1.15s cubic-bezier(.42, 0, .22, 1); }
+  @keyframes rodopiar {
+    0%   { transform: rotate(-2deg) scale(1); }
+    55%  { transform: rotate(382deg) scale(1.14); }
+    100% { transform: rotate(358deg) scale(1); }
   }
   .mascote .fala {
-    position: absolute; left: 62%; bottom: 88%; width: 176px; margin: 0;
+    position: absolute; left: 58%; bottom: 84%; width: 176px; margin: 0;
     padding: 9px 12px 10px; border: 2px solid #16334b; border-radius: 13px;
     background: #fff; color: var(--tinta);
     font: 700 12px/1.3 var(--sans);
@@ -722,79 +722,8 @@
 <div class="mascote" id="mascote">
   <p class="fala" id="fala"></p>
   <div class="pula">
-    <svg id="bonecoSvg" viewBox="0 0 220 236" role="img" aria-label="mascote: monitor de tubo com teclado-escudo">
-      <defs>
-        <linearGradient id="plastico" x1="0" y1="0" x2=".3" y2="1">
-          <stop offset="0" stop-color="#fbfdff"/><stop offset=".55" stop-color="#dae9f4"/>
-          <stop offset="1" stop-color="#b9cfe0"/>
-        </linearGradient>
-        <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#2f9fe0"/><stop offset=".55" stop-color="#bfe9ff"/>
-          <stop offset="1" stop-color="#e9f8ff"/>
-        </linearGradient>
-        <pattern id="teclas" width="11" height="11" patternUnits="userSpaceOnUse">
-          <rect width="11" height="11" fill="#e6eef6"/>
-          <rect x="1" y="1" width="8.4" height="8.4" rx="2" fill="#f6fafd" stroke="#9fb6c8" stroke-width=".9"/>
-        </pattern>
-      </defs>
-
-      <ellipse cx="112" cy="226" rx="76" ry="9" fill="#2b7fc0" opacity=".18"/>
-
-      <g stroke="#16334b" stroke-width="3.4" stroke-linejoin="round">
-        <rect x="72" y="176" width="24" height="26" rx="11" fill="#eaf3fa"/>
-        <rect x="128" y="176" width="24" height="26" rx="11" fill="#eaf3fa"/>
-        <rect x="54" y="194" width="60" height="28" rx="13" fill="#ffffff"/>
-        <rect x="112" y="194" width="60" height="28" rx="13" fill="#ffffff"/>
-        <path d="M54 212h60M112 212h60" fill="none" stroke-width="9" stroke="#2b7fc0" stroke-linecap="round"/>
-        <path d="M54 212h60M112 212h60" fill="none"/>
-        <rect x="62" y="140" width="100" height="52" rx="24" fill="#ffffff"/>
-        <path d="M70 154h84" fill="none" stroke="#2b7fc0" stroke-width="9" stroke-linecap="round"/>
-      </g>
-
-      <g stroke="#16334b" stroke-width="3.4" stroke-linejoin="round">
-        <rect x="16" y="122" width="52" height="27" rx="13" fill="#ffffff" transform="rotate(-16 42 135)"/>
-        <rect x="18" y="104" width="13" height="42" rx="6" fill="#e6eef6" transform="rotate(20 24 125)"/>
-        <rect x="12" y="92" width="42" height="12" rx="4" fill="#e8801f" transform="rotate(20 33 98)"/>
-        <path d="M6 66 38 50 52 70 20 86Z" fill="#eef5fb"/>
-        <path d="M20 86 52 70v12L22 98Z" fill="#c3d7e5"/>
-      </g>
-
-      <g stroke="#16334b" stroke-width="3.6" stroke-linejoin="round">
-        <rect x="42" y="30" width="136" height="116" rx="17" fill="url(#plastico)"/>
-        <rect x="72" y="38" width="76" height="10" rx="5" fill="#e7f1f9" stroke-width="2.2"/>
-        <rect x="56" y="58" width="108" height="78" rx="9" fill="#16334b" stroke="none"/>
-        <rect x="60" y="62" width="100" height="70" rx="6" fill="url(#ceu)" stroke="none"/>
-      </g>
-      <g clip-path="inset(0 round 6px)">
-        <path d="M60 112q26-17 52-5t48 1v22a6 6 0 0 1-6 6H66a6 6 0 0 1-6-6z" fill="#8ad04c"/>
-        <path d="M60 112q26-17 52-5t48 1v6q-24 8-48-1t-52 6z" fill="#b6e77a"/>
-        <path d="M66 80q18-11 35-2t26 0" stroke="#ffffff" stroke-width="7" fill="none"
-              stroke-linecap="round" opacity=".65"/>
-        <rect x="60" y="122" width="100" height="10" fill="#2f6fd0" opacity=".92"/>
-        <rect x="64" y="124" width="13" height="6" rx="2" fill="#cfe6ff"/>
-        <rect x="150" y="124" width="7" height="6" rx="1.5" fill="#cfe6ff" opacity=".8"/>
-      </g>
-      <path d="M64 68h9l3 4h11v13H64z" fill="#f2c96b" stroke="#a8823a" stroke-width="1.6"/>
-      <g transform="translate(148 72)">
-        <circle r="9" fill="#eef7ff" stroke="#3a7fbf" stroke-width="1.8"/>
-        <path d="M-4-1a4 4 0 0 1 7-2" stroke="#3a7fbf" stroke-width="2" fill="none" stroke-linecap="round"/>
-        <path d="M4 1a4 4 0 0 1-7 2" stroke="#3a7fbf" stroke-width="2" fill="none" stroke-linecap="round"/>
-      </g>
-      <g stroke="#101820" stroke-width="9.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M79 76h21l-10 33"/>
-        <path d="M121 76h21l-10 33"/>
-      </g>
-
-      <g transform="rotate(19 172 118)" stroke="#16334b" stroke-width="3.5" stroke-linejoin="round">
-        <rect x="142" y="40" width="60" height="150" rx="9" fill="#dfe9f2"/>
-        <rect x="149" y="47" width="46" height="136" rx="5" fill="url(#teclas)" stroke-width="2"/>
-        <path d="M142 52v-6a6 6 0 0 1 6-6h10v12z" fill="#e8801f"/>
-        <path d="M202 118h-14v-12h14z" fill="#e8801f"/>
-        <path d="M142 184v-12h14v18h-8a6 6 0 0 1-6-6z" fill="#e8801f"/>
-      </g>
-      <rect x="150" y="120" width="50" height="27" rx="13" fill="#ffffff"
-            stroke="#16334b" stroke-width="3.4" transform="rotate(14 175 133)"/>
-    </svg>
+    <img id="boneco" src="mascote.webp" width="520" height="358"
+         alt="mascote: monitor de tubo com teclado de escudo e pá de espada">
   </div>
 </div>
 
@@ -906,42 +835,40 @@ const FALAS = [
   'conectando a 56 kbps', 'salvo em A:\\', 'modo de compatibilidade',
 ];
 const mascote = document.getElementById('mascote');
-const bonecoSvg = document.getElementById('bonecoSvg');
+const boneco = document.getElementById('boneco');
 const fala = document.getElementById('fala');
-let saidaMascote = null;
-let rondaMascote = null;
+let calaBoca = null;
+let proximoRodopio = null;
 
-function sumirMascote() {
-  fala.classList.remove('on');
-  mascote.classList.remove('entrou');
+function rodopiar() {
+  boneco.classList.remove('rodando');
+  void boneco.offsetWidth;                 // reinicia a animação
+  boneco.classList.add('rodando');
 }
 
-function chamarMascote(texto, segundos = 7) {
+function chamarMascote(texto, segundos = 4) {
   if (dados.mascote === false) return;
-  clearTimeout(saidaMascote);
-  mascote.classList.add('entrou');
+  rodopiar();
   fala.textContent = texto || FALAS[Math.floor(Math.random() * FALAS.length)];
   fala.classList.add('on');
-  saidaMascote = setTimeout(sumirMascote, segundos * 1000);
+  clearTimeout(calaBoca);
+  calaBoca = setTimeout(() => fala.classList.remove('on'), segundos * 1000);
 }
 
-bonecoSvg.onclick = () => {
-  bonecoSvg.classList.remove('golpe');
-  void bonecoSvg.offsetWidth;              // reinicia a animação
-  bonecoSvg.classList.add('golpe');
-  chamarMascote(null, 5);
-};
+boneco.onclick = () => chamarMascote();
 
 function pintarMascote() {
   const ligado = dados.mascote !== false;
+  mascote.hidden = !ligado;
   document.getElementById('mascoteliga').textContent = ligado ? '🖥️ mascote' : '🖥️ mascote off';
-  clearTimeout(rondaMascote);
-  if (!ligado) { sumirMascote(); return; }
+  clearTimeout(proximoRodopio);
+  if (!ligado) return;
+  // ele fica sempre à vista; o rodopio é que vai e vem
   const ronda = () => {
-    chamarMascote();
-    rondaMascote = setTimeout(ronda, 50000 + Math.random() * 70000);
+    rodopiar();
+    proximoRodopio = setTimeout(ronda, 25000 + Math.random() * 40000);
   };
-  rondaMascote = setTimeout(ronda, 9000);
+  proximoRodopio = setTimeout(ronda, 12000);
 }
 document.getElementById('mascoteliga').onclick = () => {
   dados.mascote = dados.mascote === false;
