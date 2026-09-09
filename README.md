@@ -28,7 +28,9 @@ só pede zoom/rolagem lateral.
 - **Progresso** no widget da direita: cada célula acesa mostra uma fatia
   diferente do espectro.
 - **Nova tarefa**: digite no campo do fim da coluna e tecle Enter.
-- **Mover**: arraste o cartão. Uma linha azul mostra onde ele vai cair, e dá
+- **Mover**: arraste o cartão — ele se solta da coluna e vai balançando como
+  pêndulo atrás do cursor, no espírito do menu do Wii. Uma linha azul mostra
+  onde ele vai cair, e dá
   para reordenar dentro da própria coluna, não só trocar de coluna. Soltar no
   vazio da coluna joga para o fim. As setas `‹ ›` do cartão fazem o mesmo sem
   arrastar.
@@ -81,5 +83,10 @@ O `.nojekyll` está aí só para o Pages servir os arquivos como estão.
   Os cartões ficam quase opacos de propósito: leitura vem antes do efeito.
 - Fundo, blob, bolhas, wireframe, lens flare, barcode e sparkles são todos
   CSS/SVG — nenhuma imagem para baixar.
-- Animação respeita `prefers-reduced-motion`, e o foco de teclado tem anel
-  visível.
+- **Arrasto não usa o drag-and-drop nativo**: nele o que segue o cursor é um
+  bitmap congelado do elemento, impossível de animar. Em vez disso, pointer
+  events com um clone real seguindo o mouse — é o que permite o balanço. O
+  arrasto só começa depois de 5px de movimento, para clique continuar sendo
+  clique.
+- Animação respeita `prefers-reduced-motion` (o cartão arrastado fica
+  inclinado e parado), e o foco de teclado tem anel visível.
