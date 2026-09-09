@@ -1,7 +1,9 @@
 # Organizer
 
 Kanban para anotar as tarefas dos meus projetos.
-Visual Frutiger Aero: céu, vidro, bolhas e botões brilhantes.
+
+Visual aero-tech: painéis de vidro escuro sobre um zoom-burst de luz, cromo
+líquido, curvas vetoriais, tipografia de HUD e aberração cromática.
 
 **No ar:** https://fabiomiranda04.github.io/organizer/ — depois de ligar o
 Pages uma vez (veja *Publicação*).
@@ -48,8 +50,13 @@ consegue:
 Depois disso todo push na `main` republica sozinho, sem build e sem workflow.
 O `.nojekyll` está aí só para o Pages servir os arquivos como estão.
 
-## Sobre a fonte
+## Sobre as fontes
 
-A tipografia é a **Titillium Web**, vinda do Google Fonts. Se ela não
-carregar (sem internet, rede bloqueada), o app cai para a fonte do sistema e
-continua funcionando igual — só muda o desenho das letras.
+**Space Grotesk** no texto e **JetBrains Mono** em tudo que é rótulo, número
+e etiqueta — é a mono que dá o ar de painel técnico. Ambas vêm do Google
+Fonts; se não carregarem (sem internet, rede bloqueada), o app cai para as
+fontes do sistema e continua funcionando igual.
+
+O fundo é todo CSS/SVG — nenhuma imagem para baixar. As animações respeitam
+`prefers-reduced-motion`: quem pede menos movimento no sistema recebe a cena
+parada.
