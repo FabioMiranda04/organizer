@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12131a">
+<title>Organizer — kanban</title>
+<style>
+  :root {
+    --bg: #101118;
+    --painel: #181a24;
+    --painel-2: #1f2230;
+    --linha: #2a2e3f;
+    --texto: #e8e9f0;
+    --texto-fraco: #8e93a8;
+    --acento: #7c8cff;
+    --ok: #45c48a;
+    --raio: 12px;
+    --fonte: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--texto);
+    font: 15px/1.45 var(--fonte);
+    -webkit-font-smoothing: antialiased;
+  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; border: 0; background: none; }
+
+  /* ---------- cabeçalho ---------- */
+  header {
+    padding: 18px 16px 12px;
+    border-bottom: 1px solid var(--linha);
+  }
+  .titulo { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 18px; letter-spacing: -0.01em; }
+  .titulo span { color: var(--texto-fraco); font-size: 13px; }
+  .backup { margin-left: auto; display: flex; gap: 14px; }
+  .backup button { color: var(--texto-fraco); font-size: 13px; }
+  .backup button:hover { color: var(--texto); }
+
+  /* ---------- projetos ---------- */
+  .projetos {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    margin-top: 14px;
+  }
+  .chip {
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--painel); border: 1px solid var(--linha);
+    color: var(--texto-fraco); font-size: 13px; white-space: nowrap;
+  }
+  .chip:hover { color: var(--texto); }
+  .chip.ativo { background: var(--acento); border-color: var(--acento); color: #0d0e14; font-weight: 600; }
+  .chip.novo { border-style: dashed; }
+  .acoes-projeto { display: flex; gap: 12px; margin-left: 4px; }
+  .acoes-projeto button { font-size: 12px; color: var(--texto-fraco); text-decoration: underline; text-underline-offset: 3px; }
+  .acoes-projeto button:hover { color: var(--texto); }
+
+  /* ---------- quadro ---------- */
+  main {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    padding: 16px;
+    align-items: start;
+  }
+  .coluna {
+    background: var(--painel);
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    padding: 12px;
+    min-height: 180px;
+    transition: border-color .15s, background .15s;
+  }
+  .coluna.alvo { border-color: var(--acento); background: var(--painel-2); }
+  .coluna h2 {
+    margin: 0 0 10px; font-size: 12px; text-transform: uppercase;
+    letter-spacing: .08em; color: var(--texto-fraco);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .contador {
+    background: var(--painel-2); border-radius: 999px;
+    padding: 1px 7px; font-size: 11px; letter-spacing: 0;
+  }
+  .limpar { margin-left: auto; font-size: 11px; color: var(--texto-fraco); text-transform: none; letter-spacing: 0; }
+  .limpar:hover { color: var(--texto); }
+
+  .cartao {
+    background: var(--painel-2);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    display: flex; align-items: flex-start; gap: 8px;
+    cursor: grab;
+  }
+  .cartao:hover { border-color: var(--linha); }
+  .cartao.arrastando { opacity: .4; }
+  .cartao .texto { flex: 1; outline: none; word-break: break-word; }
+  .cartao .texto:focus { color: #fff; }
+  .cartao.feito .texto { color: var(--texto-fraco); text-decoration: line-through; }
+  .etiqueta {
+    display: inline-block; font-size: 11px; padding: 1px 7px;
+    border-radius: 999px; margin-bottom: 6px;
+    background: color-mix(in srgb, var(--cor) 22%, transparent);
+    color: var(--cor);
+  }
+  .setas { display: flex; flex-direction: column; gap: 2px; opacity: 0; transition: opacity .15s; }
+  .cartao:hover .setas, .cartao:focus-within .setas { opacity: 1; }
+  .setas button { color: var(--texto-fraco); font-size: 13px; line-height: 1; padding: 2px 4px; border-radius: 5px; }
+  .setas button:hover { color: var(--texto); background: var(--linha); }
+  .vazio { color: var(--texto-fraco); font-size: 13px; padding: 6px 2px 10px; }
+
+  .nova {
+    width: 100%; background: transparent; border: 1px dashed var(--linha);
+    border-radius: 10px; padding: 9px 12px; color: var(--texto);
+  }
+  .nova::placeholder { color: var(--texto-fraco); }
+  .nova:focus { outline: none; border-color: var(--acento); border-style: solid; }
+  .nova:disabled { opacity: .5; cursor: not-allowed; }
+
+  @media (max-width: 720px) {
+    main { grid-template-columns: 1fr; }
+    .setas { opacity: 1; flex-direction: row; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="titulo">
+    <h1>Organizer</h1>
+    <span>backlog dos meus projetos</span>
+    <div class="backup">
+      <button id="exportar">exportar</button>
+      <button id="importar">importar</button>
+    </div>
+  </div>
+  <div class="projetos" id="projetos"></div>
+</header>
+
+<main id="quadro"></main>
+
+<input type="file" id="arquivo" accept="application/json" hidden>
+
+<script>
+const CHAVE = 'organizer.kanban.v1';
+const COLUNAS = [['backlog', 'Backlog'], ['fazendo', 'Fazendo'], ['feito', 'Feito']];
+
+let dados = carregar();
+let arrastando = null;
+
+function carregar() {
+  try {
+    const bruto = JSON.parse(localStorage.getItem(CHAVE));
+    if (bruto && Array.isArray(bruto.projetos)) return bruto;
+  } catch {}
+  const id = novoId();
+  return { projetos: [{ id, nome: 'Geral' }], tarefas: [], filtro: id };
+}
+
+function salvar() { localStorage.setItem(CHAVE, JSON.stringify(dados)); }
+function novoId() { return Math.random().toString(36).slice(2, 10); }
+function esc(s) { return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function cor(id) {
+  let h = 0;
+  for (const c of id) h = (h * 31 + c.charCodeAt(0)) % 360;
+  return `hsl(${h} 70% 68%)`;
+}
+
+/* ---------- projetos ---------- */
+function desenharProjetos() {
+  const alvo = document.getElementById('projetos');
+  alvo.innerHTML = '';
+  const chip = (rotulo, valor, extra = '') => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (dados.filtro === valor ? ' ativo' : '') + extra;
+    b.textContent = rotulo;
+    b.onclick = () => { dados.filtro = valor; salvar(); desenhar(); };
+    return b;
+  };
+  alvo.append(chip('Todos', 'todos'));
+  dados.projetos.forEach(p => alvo.append(chip(p.nome, p.id)));
+
+  const add = document.createElement('button');
+  add.className = 'chip novo';
+  add.textContent = '+ projeto';
+  add.onclick = criarProjeto;
+  alvo.append(add);
+
+  const atual = dados.projetos.find(p => p.id === dados.filtro);
+  if (atual) {
+    const caixa = document.createElement('div');
+    caixa.className = 'acoes-projeto';
+    const ren = document.createElement('button');
+    ren.textContent = 'renomear';
+    ren.onclick = () => {
+      const nome = prompt('Novo nome do projeto:', atual.nome);
+      if (nome && nome.trim()) { atual.nome = nome.trim(); salvar(); desenhar(); }
+    };
+    const exc = document.createElement('button');
+    exc.textContent = 'excluir';
+    exc.onclick = () => {
+      const n = dados.tarefas.filter(t => t.projeto === atual.id).length;
+      if (!confirm(`Excluir "${atual.nome}" e suas ${n} tarefa(s)?`)) return;
+      dados.projetos = dados.projetos.filter(p => p.id !== atual.id);
+      dados.tarefas = dados.tarefas.filter(t => t.projeto !== atual.id);
+      dados.filtro = 'todos';
+      salvar(); desenhar();
+    };
+    caixa.append(ren, exc);
+    alvo.append(caixa);
+  }
+}
+
+function criarProjeto() {
+  const nome = prompt('Nome do projeto:');
+  if (!nome || !nome.trim()) return;
+  const p = { id: novoId(), nome: nome.trim() };
+  dados.projetos.push(p);
+  dados.filtro = p.id;
+  salvar(); desenhar();
+}
+
+/* ---------- quadro ---------- */
+function desenharQuadro() {
+  const quadro = document.getElementById('quadro');
+  quadro.innerHTML = '';
+  const todos = dados.filtro === 'todos';
+
+  COLUNAS.forEach(([id, rotulo], i) => {
+    const tarefas = dados.tarefas.filter(t => t.coluna === id && (todos || t.projeto === dados.filtro));
+
+    const col = document.createElement('section');
+    col.className = 'coluna';
+    col.innerHTML = `<h2>${rotulo}<span class="contador">${tarefas.length}</span></h2>`;
+
+    if (id === 'feito' && tarefas.length) {
+      const limpar = document.createElement('button');
+      limpar.className = 'limpar';
+      limpar.textContent = 'limpar';
+      limpar.onclick = () => {
+        if (!confirm(`Apagar ${tarefas.length} tarefa(s) concluída(s)?`)) return;
+        const apagar = new Set(tarefas.map(t => t.id));
+        dados.tarefas = dados.tarefas.filter(t => !apagar.has(t.id));
+        salvar(); desenhar();
+      };
+      col.querySelector('h2').append(limpar);
+    }
+
+    if (!tarefas.length) {
+      const vazio = document.createElement('p');
+      vazio.className = 'vazio';
+      vazio.textContent = 'Nada aqui.';
+      col.append(vazio);
+    }
+
+    tarefas.forEach(t => col.append(cartao(t, i, todos)));
+
+    const nova = document.createElement('input');
+    nova.className = 'nova';
+    nova.placeholder = todos ? 'escolha um projeto para adicionar' : '+ nova tarefa';
+    nova.disabled = todos;
+    nova.onkeydown = e => {
+      if (e.key !== 'Enter' || !nova.value.trim()) return;
+      dados.tarefas.push({ id: novoId(), projeto: dados.filtro, coluna: id, texto: nova.value.trim() });
+      salvar(); desenhar();
+      const campos = document.querySelectorAll('.nova');
+      campos[i] && campos[i].focus();
+    };
+    col.append(nova);
+
+    col.ondragover = e => { e.preventDefault(); col.classList.add('alvo'); };
+    col.ondragleave = () => col.classList.remove('alvo');
+    col.ondrop = e => {
+      e.preventDefault();
+      col.classList.remove('alvo');
+      mover(arrastando, id);
+    };
+
+    quadro.append(col);
+  });
+}
+
+function cartao(t, i, mostrarEtiqueta) {
+  const el = document.createElement('article');
+  el.className = 'cartao' + (t.coluna === 'feito' ? ' feito' : '');
+  el.draggable = true;
+
+  const corpo = document.createElement('div');
+  corpo.className = 'texto';
+  if (mostrarEtiqueta) {
+    const p = dados.projetos.find(p => p.id === t.projeto);
+    if (p) corpo.innerHTML = `<span class="etiqueta" style="--cor:${cor(p.id)}">${esc(p.nome)}</span><br>`;
+  }
+  const linha = document.createElement('span');
+  linha.contentEditable = 'true';
+  linha.textContent = t.texto;
+  linha.onblur = () => {
+    const novo = linha.textContent.trim();
+    if (!novo) { apagar(t.id); return; }
+    if (novo !== t.texto) { t.texto = novo; salvar(); }
+  };
+  linha.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); linha.blur(); } };
+  corpo.append(linha);
+
+  const setas = document.createElement('div');
+  setas.className = 'setas';
+  if (i > 0) setas.append(botao('‹', () => mover(t.id, COLUNAS[i - 1][0])));
+  if (i < COLUNAS.length - 1) setas.append(botao('›', () => mover(t.id, COLUNAS[i + 1][0])));
+  setas.append(botao('×', () => apagar(t.id)));
+
+  el.append(corpo, setas);
+  el.ondragstart = () => { arrastando = t.id; el.classList.add('arrastando'); };
+  el.ondragend = () => el.classList.remove('arrastando');
+  return el;
+}
+
+function botao(rotulo, acao) {
+  const b = document.createElement('button');
+  b.textContent = rotulo;
+  b.onclick = acao;
+  return b;
+}
+
+function mover(id, coluna) {
+  const t = dados.tarefas.find(t => t.id === id);
+  if (!t || t.coluna === coluna) return;
+  t.coluna = coluna;
+  dados.tarefas = dados.tarefas.filter(x => x !== t).concat(t);
+  salvar(); desenhar();
+}
+
+function apagar(id) {
+  dados.tarefas = dados.tarefas.filter(t => t.id !== id);
+  salvar(); desenhar();
+}
+
+/* ---------- backup ---------- */
+document.getElementById('exportar').onclick = () => {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `organizer-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+};
+
+document.getElementById('importar').onclick = () => document.getElementById('arquivo').click();
+document.getElementById('arquivo').onchange = async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    const lido = JSON.parse(await f.text());
+    if (!Array.isArray(lido.projetos) || !Array.isArray(lido.tarefas)) throw 0;
+    if (!confirm('Isso substitui tudo o que está salvo aqui. Continuar?')) return;
+    dados = lido;
+    salvar(); desenhar();
+  } catch {
+    alert('Arquivo inválido.');
+  }
+  e.target.value = '';
+};
+
+function desenhar() { desenharProjetos(); desenharQuadro(); }
+desenhar();
+</script>
+</body>
+</html>
