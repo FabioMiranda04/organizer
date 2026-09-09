@@ -128,6 +128,38 @@ consegue:
 Depois disso todo push na `main` republica sozinho, sem build e sem workflow.
 O `.nojekyll` está aí só para o Pages servir os arquivos como estão.
 
+## Desempenho das animações
+
+Medido no próprio app, contando elementos com `backdrop-filter` e com
+animação ativa:
+
+| | antes | depois |
+|---|---|---|
+| elementos com `backdrop-filter` | 23 | **5** |
+| elementos animados | 36 | **28** |
+
+O que estava caro e o que mudou:
+
+- **Vidro em coisa pequena.** Cartões, pills e o widget tinham
+  `backdrop-filter` e já eram ~94% opacos: o desfoque não aparecia e cada um
+  virava uma camada que a GPU recompõe. Saiu de todos; ficou só nos cinco
+  painéis grandes, onde o efeito de fato se vê.
+- **Raio do desfoque.** 26px → 13px nos painéis. O custo cresce com o raio.
+- **Animação que repinta.** O holográfico animava `background-position`, o
+  que repinta o elemento a cada quadro; virou `hue-rotate`, que a GPU resolve
+  no compositor. Na pill ativa ele foi para uma camada atrás do texto, senão
+  o filtro tingiria o rótulo junto.
+- **O blob** deformava `border-radius` (repinta) e agora deforma por
+  `transform` (compositor).
+- **Menos coisas boiando** atrás do vidro: cada uma invalida o desfoque dos
+  painéis. 10 bolhas → 6, 9 faíscas → 6, 4 discos → 3.
+- **Arrastar** chamava `elementFromPoint` e `getBoundingClientRect` a cada
+  `pointermove`, forçando layout no meio do gesto. Agora no máximo uma vez
+  por quadro, via `requestAnimationFrame`.
+- **Chuvisco** alocava um `ImageData` novo por quadro; agora reaproveita o
+  mesmo.
+- **Aba escondida** pausa bolhas, faíscas, discos, blob e mascote.
+
 ## Notas de design
 
 - **Fontes**: `Archivo Black` no cromo do título, `Nunito Sans` no texto e

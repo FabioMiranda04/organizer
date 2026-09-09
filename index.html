@@ -62,6 +62,8 @@
 
   /* coisas flutuando atrás do vidro — o backdrop-filter as desfoca de graça */
   .ambiente { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  body.parado .ambiente i, body.parado .aura i,
+  body.parado .mascote .pula, body.parado .vitrine .blob { animation-play-state: paused; }
   .ambiente i { position: absolute; display: block; }
   .ambiente .bolha {
     border-radius: 50%;
@@ -101,11 +103,10 @@
   .holo, .iris {
     background: var(--holo);
     background-size: 340% 340%;
-    animation: iris 16s ease-in-out infinite;
+    animation: iris 22s linear infinite;
   }
   @keyframes iris {
-    0%, 100% { background-position: 0% 50%; }
-    50%      { background-position: 100% 50%; }
+    to { filter: hue-rotate(360deg); }
   }
   .barcode {
     width: 86px; height: 20px; flex: none;
@@ -131,9 +132,7 @@
     position: relative; overflow: hidden;
     padding: 8px 20px 9px; border-radius: 999px;
     font: 500 13px/1 var(--sans); color: #17567f; white-space: nowrap;
-    background: linear-gradient(180deg, rgba(246,252,255,.95) 0%, rgba(213,238,252,.8) 46%, rgba(169,216,244,.85) 52%, rgba(207,234,255,.9) 100%);
-    backdrop-filter: blur(12px) saturate(170%);
-    -webkit-backdrop-filter: blur(12px) saturate(170%);
+    background: linear-gradient(180deg, #f8fcff 0%, #dcf0fc 46%, #b2dcf6 52%, #d6edff 100%);
     border: 1px solid rgba(255,255,255,.8);
     box-shadow: 0 3px 6px rgba(30,90,130,.2), inset 0 1px 0 #fff, inset 0 -7px 10px rgba(150,205,235,.4);
     transition: transform .13s, box-shadow .13s, filter .13s;
@@ -146,14 +145,16 @@
   .pill:hover { transform: translateY(-1px); filter: brightness(1.04); }
   .pill:active { transform: translateY(1px); }
   .pill.on {
-    color: #14324a; border-color: #fff;
-    /* sem backdrop-filter: com a borda arredondada ele deixava uma costura
-       escura no topo, e aqui o gradiente cobre tudo — não havia o que desfocar */
-    backdrop-filter: none; -webkit-backdrop-filter: none;
-    background: var(--holo); background-size: 340% 340%;
-    animation: iris 16s ease-in-out infinite;
+    color: #14324a; border-color: #fff; background: transparent;
     box-shadow: 0 4px 12px rgba(120,70,180,.3), inset 0 1px 0 rgba(255,255,255,.9);
     text-shadow: 0 1px 0 rgba(255,255,255,.7);
+  }
+  /* o holográfico vive numa camada atrás do texto: assim o hue-rotate da
+     animação não tinge junto o rótulo da pill */
+  .pill.on::before {
+    content: ''; position: absolute; inset: 0; z-index: -1;
+    background: var(--holo); background-size: 340% 340%;
+    animation: iris 22s linear infinite;
   }
 
   /* ---------- casca ---------- */
@@ -161,8 +162,8 @@
   .painel {
     position: relative;
     background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.58));
-    backdrop-filter: blur(26px) saturate(190%);
-    -webkit-backdrop-filter: blur(26px) saturate(190%);
+    backdrop-filter: blur(13px) saturate(180%);
+    -webkit-backdrop-filter: blur(13px) saturate(180%);
     border: 1px solid rgba(255,255,255,.75);
     border-radius: var(--raio);
     box-shadow:
@@ -211,8 +212,8 @@
   .vitrine .blob {
     position: absolute; left: 16%; top: 12%; width: 240px; height: 170px;
     border-radius: 62% 38% 46% 54% / 54% 62% 38% 46%;
-    filter: blur(.4px);
-    animation: morfar 14s ease-in-out infinite;
+    animation: morfar 17s ease-in-out infinite alternate;
+    will-change: transform;
     box-shadow: inset 0 -18px 34px rgba(255,255,255,.75), inset 0 14px 30px rgba(90,40,140,.28),
                 0 14px 30px rgba(80,60,140,.28);
   }
@@ -232,9 +233,8 @@
     animation: rodar 46s linear infinite;
   }
   @keyframes morfar {
-    0%, 100% { border-radius: 62% 38% 46% 54% / 54% 62% 38% 46%; }
-    33%      { border-radius: 44% 56% 62% 38% / 42% 46% 54% 58%; }
-    66%      { border-radius: 55% 45% 38% 62% / 60% 38% 62% 40%; }
+    from { transform: rotate(0deg) scale(1, 1); }
+    to   { transform: rotate(24deg) scale(1.07, .93); }
   }
   @keyframes rodar { to { transform: rotate(360deg); } }
   .vitrine .flare {
@@ -284,9 +284,7 @@
   .widget {
     margin-left: auto; flex: none; width: 232px;
     border: 1px solid rgba(255,255,255,.8); border-radius: 7px; overflow: hidden;
-    background: rgba(247,251,254,.62);
-    backdrop-filter: blur(12px) saturate(160%);
-    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    background: #f5fafe;
     box-shadow: inset 0 1px 3px rgba(60,110,150,.16);
   }
   .widget .cima {
@@ -318,7 +316,7 @@
   .faixa h2 {
     margin: 0; font: 700 21px/1 var(--sans); letter-spacing: -.01em; color: #245a80;
   }
-  .faixa .diamante { width: 11px; height: 11px; transform: rotate(45deg); background: var(--holo-forte); background-size: 300% 300%; animation: iris 16s ease-in-out infinite; border: 1px solid #fff; }
+  .faixa .diamante { width: 11px; height: 11px; transform: rotate(45deg); background: var(--holo-forte); background-size: 300% 300%; animation: iris 22s linear infinite; border: 1px solid #fff; }
   .faixa .linha { flex: 1; height: 3px; background: linear-gradient(90deg, var(--borda-forte), rgba(185,214,234,0)); border-radius: 2px; }
 
   /* ---------- quadro ---------- */
@@ -352,9 +350,7 @@
   .cartao {
     position: relative; display: flex; align-items: flex-start; gap: 8px;
     padding: 10px 11px 11px 14px; margin-bottom: 8px; border-radius: 9px; cursor: grab;
-    background: linear-gradient(180deg, rgba(255,255,255,.94), rgba(244,250,254,.86));
-    backdrop-filter: blur(10px) saturate(150%);
-    -webkit-backdrop-filter: blur(10px) saturate(150%);
+    background: linear-gradient(180deg, #ffffff, #f3f9fe);
     border: 1px solid rgba(255,255,255,.85);
     box-shadow: 0 2px 5px rgba(40,100,140,.1), inset 0 1px 0 #fff,
                 inset 0 -8px 14px rgba(255,255,255,.5), 0 0 0 1px rgba(173,212,238,.4);
@@ -539,7 +535,7 @@
     pointer-events: none;
   }
   .mascote[hidden] { display: none; }
-  .mascote .pula { animation: boiar 4.4s ease-in-out infinite; }
+  .mascote .pula { animation: boiar 4.4s ease-in-out infinite; will-change: transform; }
   @keyframes boiar {
     0%, 100% { transform: translateY(0); }
     50%      { transform: translateY(-11px); }
@@ -765,6 +761,9 @@ let ponteiro = { x: innerWidth / 2, y: innerHeight / 2 };
 let audio = null;
 
 addEventListener('pointermove', e => { ponteiro = { x: e.clientX, y: e.clientY }; }, { passive: true });
+// aba em segundo plano não precisa gastar quadro com bolha nenhuma
+document.addEventListener('visibilitychange',
+  () => document.body.classList.toggle('parado', document.hidden));
 
 function carregar() {
   try {
@@ -799,18 +798,18 @@ function visiveis() {
     alvo.append(i);
   };
 
-  for (let n = 0; n < 10; n++) {                       // bolhas subindo
+  for (let n = 0; n < 6; n++) {                       // bolhas subindo
     const d = rnd(26, 120);
     criar('bolha', `left:${rnd(0, 96)}%;top:${rnd(70, 125)}%;width:${d}px;height:${d}px;` +
       `opacity:${rnd(.3, .7).toFixed(2)};--dx:${rnd(-70, 70).toFixed(0)}px;` +
       `animation-duration:${rnd(26, 52).toFixed(0)}s;animation-delay:-${rnd(0, 40).toFixed(0)}s`);
   }
-  for (let n = 0; n < 9; n++) {                        // faíscas piscando
+  for (let n = 0; n < 6; n++) {                        // faíscas piscando
     const d = rnd(9, 26);
     criar('faisca', `left:${rnd(2, 97)}%;top:${rnd(4, 94)}%;width:${d}px;height:${d}px;` +
       `animation-duration:${rnd(2.4, 5.5).toFixed(1)}s;animation-delay:-${rnd(0, 5).toFixed(1)}s`);
   }
-  for (let n = 0; n < 4; n++) {                        // mini CDs vagando
+  for (let n = 0; n < 3; n++) {                        // mini CDs vagando
     const d = rnd(30, 62);
     criar('disco', `left:${rnd(4, 90)}%;top:${rnd(10, 88)}%;width:${d}px;height:${d}px;` +
       `opacity:${rnd(.3, .55).toFixed(2)};--dx:${rnd(-220, 220).toFixed(0)}px;--dy:${rnd(-180, 180).toFixed(0)}px;` +
@@ -885,9 +884,10 @@ let canal = 0;
 let relogioTv = null;
 let ateChuvisco = 0;
 
+let quadroRuido = null;
 function pintarChuvisco() {
   const { width: w, height: h } = chuvisco;
-  const quadro = pincel.createImageData(w, h);
+  const quadro = quadroRuido || (quadroRuido = pincel.createImageData(w, h));
   const d = quadro.data;
   for (let i = 0; i < d.length; i += 4) {
     const v = Math.random() * 255 | 0;
@@ -1285,6 +1285,7 @@ function cartao(t, i, mostrarEtiqueta, proximo) {
     if (e.button !== 0 || e.target.closest('button') || linha.isContentEditable) return;
     const ix = e.clientX, iy = e.clientY;
     let ativo = false, fantasma = null, dx = 0, dy = 0;
+    let mx = ix, my = iy, miraPendente = false;
 
     const arrastar = ev => {
       if (!ativo) {
@@ -1306,7 +1307,12 @@ function cartao(t, i, mostrarEtiqueta, proximo) {
         document.body.classList.add('arrastando-agora');
       }
       fantasma.style.transform = `translate3d(${ev.clientX - dx}px, ${ev.clientY - dy}px, 0)`;
-      mirar(ev.clientX, ev.clientY);
+      // elementFromPoint + getBoundingClientRect forçam layout: no máximo um por quadro
+      mx = ev.clientX; my = ev.clientY;
+      if (!miraPendente) {
+        miraPendente = true;
+        requestAnimationFrame(() => { miraPendente = false; mirar(mx, my); });
+      }
     };
 
     const largar = () => {
