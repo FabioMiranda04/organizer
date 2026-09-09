@@ -66,6 +66,19 @@ só o som, sem a parte visual.
 O flash é **um** e não uma sequência: piscar repetido em tela cheia é gatilho
 de crise fotossensível.
 
+## A tevê do canto
+
+Uma CRT de plástico no canto inferior direito passando gatos aleatórios, com
+legenda de meme por cima. Clique na tela para trocar de canal; sozinha ela
+troca a cada 15 segundos. Entre um gato e outro entra chuvisco de verdade —
+ruído desenhado pixel a pixel num `<canvas>` de 96x72, com barra de
+rolagem, esticado com `image-rendering: pixelated`.
+
+**Ela busca as imagens do `cataas.com`** (Cat as a Service — grátis, sem
+chave). É a única coisa no app que sai para a internet; se o serviço estiver
+fora, a tela mostra `SEM SINAL` e o resto do app segue igual. O botão
+`📺 tv` no banner desliga, e desligada ela não faz requisição nenhuma.
+
 ## O ambiente é vivo
 
 Atrás dos painéis flutuam bolhas subindo, faíscas piscando e mini-CDs
