@@ -46,6 +46,19 @@
   button { cursor: pointer; border: 0; background: none; }
   :focus-visible { outline: 2px solid var(--azul); outline-offset: 2px; }
 
+  /* manchas de cor no fundo — sem elas o vidro não tem o que distorcer */
+  .aura { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  .aura i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .42; }
+  .aura i:nth-child(1) { width: 460px; height: 420px; left: -6%;  top: -12%; background: #ff9ad8; }
+  .aura i:nth-child(2) { width: 520px; height: 460px; right: -8%; top: 2%;   background: #8fb6ff; }
+  .aura i:nth-child(3) { width: 420px; height: 380px; left: 34%;  bottom: -14%; background: #7ff0d4; }
+  .aura i:nth-child(4) { width: 300px; height: 300px; right: 18%; bottom: -8%;  background: #c9a6ff; opacity: .3; }
+  .aura i { animation: boiar 22s ease-in-out infinite alternate; }
+  .aura i:nth-child(2) { animation-duration: 28s; animation-delay: -6s; }
+  .aura i:nth-child(3) { animation-duration: 34s; animation-delay: -12s; }
+  .aura i:nth-child(4) { animation-duration: 26s; animation-delay: -3s; }
+  @keyframes boiar { to { transform: translate3d(40px, -30px, 0); } }
+
   /* ---------- utilidades y2k ---------- */
   .holo, .iris {
     background: var(--holo);
@@ -80,8 +93,10 @@
     position: relative; overflow: hidden;
     padding: 8px 20px 9px; border-radius: 999px;
     font: 500 13px/1 var(--sans); color: #17567f; white-space: nowrap;
-    background: linear-gradient(180deg, #f6fcff 0%, #d5eefc 46%, #a9d8f4 52%, #cfeaff 100%);
-    border: 1px solid #86bede;
+    background: linear-gradient(180deg, rgba(246,252,255,.95) 0%, rgba(213,238,252,.8) 46%, rgba(169,216,244,.85) 52%, rgba(207,234,255,.9) 100%);
+    backdrop-filter: blur(12px) saturate(170%);
+    -webkit-backdrop-filter: blur(12px) saturate(170%);
+    border: 1px solid rgba(255,255,255,.8);
     box-shadow: 0 3px 6px rgba(30,90,130,.2), inset 0 1px 0 #fff, inset 0 -7px 10px rgba(150,205,235,.4);
     transition: transform .13s, box-shadow .13s, filter .13s;
   }
@@ -101,12 +116,26 @@
   }
 
   /* ---------- casca ---------- */
-  .folha { width: 1180px; margin: 0 auto; padding: 24px 0 40px; }
+  .folha { position: relative; z-index: 1; width: 1180px; margin: 0 auto; padding: 24px 0 40px; }
   .painel {
-    background: var(--papel);
-    border: 1px solid var(--borda);
+    position: relative;
+    background: linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.58));
+    backdrop-filter: blur(26px) saturate(190%);
+    -webkit-backdrop-filter: blur(26px) saturate(190%);
+    border: 1px solid rgba(255,255,255,.75);
     border-radius: var(--raio);
-    box-shadow: 0 10px 26px rgba(30,90,130,.13), inset 0 1px 0 #fff;
+    box-shadow:
+      0 10px 26px rgba(30,90,130,.16),
+      0 1px 0 rgba(255,255,255,.9) inset,
+      0 -12px 22px rgba(255,255,255,.45) inset,
+      0 0 0 1px rgba(160,205,235,.35);
+  }
+  /* aresta especular: o brilho que corre na borda de cima do vidro */
+  .painel::after {
+    content: ''; position: absolute; left: 7%; right: 7%; top: 0; height: 1px;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+      rgba(255,255,255,0), rgba(255,255,255,.98) 22%, rgba(255,255,255,.98) 78%, rgba(255,255,255,0));
   }
 
   /* ---------- banner ---------- */
@@ -136,7 +165,7 @@
   .vitrine {
     position: relative; width: 400px; flex: none; overflow: hidden;
     border-left: 1px solid var(--borda);
-    background: linear-gradient(180deg, #bfe2fa, #eaf6ff 60%, #dff0fd);
+    background: linear-gradient(180deg, rgba(191,226,250,.72), rgba(234,246,255,.5) 60%, rgba(223,240,253,.66));
   }
   .vitrine .blob {
     position: absolute; left: 16%; top: 12%; width: 240px; height: 170px;
@@ -168,14 +197,14 @@
   .cintila { animation: cintilar 3.4s ease-in-out infinite; transform-origin: center; }
   @keyframes cintilar { 0%, 100% { opacity: .95; transform: scale(1); } 50% { opacity: .45; transform: scale(.82); } }
   @media (prefers-reduced-motion: reduce) {
-    .holo, .iris, .pill.on, .cintila, .cartao::before { animation: none; }
+    .holo, .iris, .pill.on, .cintila, .cartao::before, .aura i { animation: none; }
   }
 
   /* ---------- barra de projetos ---------- */
   .barra {
     display: flex; align-items: center; gap: 10px;
     margin-top: 14px; padding: 12px 14px;
-    background: linear-gradient(180deg, #ffffff, #e9f4fc);
+    background: linear-gradient(180deg, rgba(255,255,255,.6), rgba(233,244,252,.5));
   }
   .projetos { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
   .pill.novo {
@@ -198,8 +227,10 @@
   /* widget de progresso, no espírito do "playing : song" */
   .widget {
     margin-left: auto; flex: none; width: 232px;
-    border: 1px solid var(--borda-forte); border-radius: 5px; overflow: hidden;
-    background: #f7fbfe;
+    border: 1px solid rgba(255,255,255,.8); border-radius: 7px; overflow: hidden;
+    background: rgba(247,251,254,.62);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
     box-shadow: inset 0 1px 3px rgba(60,110,150,.16);
   }
   .widget .cima {
@@ -249,8 +280,8 @@
   .coluna h3 {
     display: flex; align-items: center; gap: 8px;
     margin: -14px -14px 12px; padding: 11px 13px;
-    background: linear-gradient(180deg, #fbfdff, #e4f1fb);
-    border-bottom: 1px solid var(--borda);
+    background: linear-gradient(180deg, rgba(251,253,255,.75), rgba(228,241,251,.6));
+    border-bottom: 1px solid rgba(255,255,255,.7);
     font: 700 12px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: #245a80;
   }
   .indice { font: 400 11px/1 var(--pixel); color: #fff; background: var(--ac); padding: 3px 5px; border-radius: 3px; }
@@ -265,9 +296,12 @@
   .cartao {
     position: relative; display: flex; align-items: flex-start; gap: 8px;
     padding: 10px 11px 11px 14px; margin-bottom: 8px; border-radius: 9px; cursor: grab;
-    background: linear-gradient(180deg, #ffffff, #f4fafe);
-    border: 1px solid #d8e9f4;
-    box-shadow: 0 2px 5px rgba(40,100,140,.1), inset 0 1px 0 #fff;
+    background: linear-gradient(180deg, rgba(255,255,255,.94), rgba(244,250,254,.86));
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+    border: 1px solid rgba(255,255,255,.85);
+    box-shadow: 0 2px 5px rgba(40,100,140,.1), inset 0 1px 0 #fff,
+                inset 0 -8px 14px rgba(255,255,255,.5), 0 0 0 1px rgba(173,212,238,.4);
     transition: transform .15s, box-shadow .15s, border-color .15s;
   }
   .cartao::before {
@@ -282,9 +316,17 @@
     border-color: var(--borda-forte);
     box-shadow: 0 8px 18px rgba(40,100,140,.18), inset 0 1px 0 #fff;
   }
+  .cartao:active { cursor: grabbing; }
   .cartao.arrastando { opacity: .4; }
-  .cartao .texto { flex: 1; word-break: break-word; font-size: 14px; }
+  /* a linha azul mostra onde o cartão vai cair; depois do :hover para vencer a cascata */
+  .cartao.solta-antes  { box-shadow: 0 -3px 0 0 var(--azul), 0 2px 5px rgba(40,100,140,.1); }
+  .cartao.solta-depois { box-shadow: 0 3px 0 0 var(--azul), 0 2px 5px rgba(40,100,140,.1); }
+  .cartao .texto { flex: 1; word-break: break-word; font-size: 14px; user-select: none; }
   .cartao .texto span[contenteditable] { outline: none; display: block; }
+  .cartao .texto span[contenteditable="true"] {
+    user-select: text; background: #fff; border-radius: 4px; padding: 1px 4px; margin: -1px -4px;
+    box-shadow: 0 0 0 2px rgba(43,127,192,.35);
+  }
   .cartao.feito { background: linear-gradient(180deg, #fbfffd, #eefaf5); border-color: #cfeade; }
   .cartao.feito::before { background: linear-gradient(180deg, #7fe6bf, var(--menta)); animation: none; }
   .cartao.feito .texto span[contenteditable] { color: #6d9a8b; text-decoration: line-through; }
@@ -324,6 +366,8 @@
 </style>
 </head>
 <body>
+
+<div class="aura" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 
 <div class="folha">
 
@@ -409,6 +453,7 @@ const CELULAS = 24;
 
 let dados = carregar();
 let arrastando = null;
+let destino = null;
 
 function carregar() {
   try {
@@ -577,7 +622,7 @@ function desenharQuadro() {
       col.append(vazio);
     }
 
-    tarefas.forEach(t => col.append(cartao(t, i, todos)));
+    tarefas.forEach((t, n) => col.append(cartao(t, i, todos, tarefas[n + 1] && tarefas[n + 1].id)));
 
     const nova = document.createElement('input');
     nova.className = 'nova';
@@ -592,15 +637,26 @@ function desenharQuadro() {
     };
     col.append(nova);
 
-    col.ondragover = e => { e.preventDefault(); col.classList.add('alvo'); };
-    col.ondragleave = () => col.classList.remove('alvo');
-    col.ondrop = e => { e.preventDefault(); col.classList.remove('alvo'); mover(arrastando, id); };
+    col.ondragover = e => {
+      e.preventDefault();
+      col.classList.add('alvo');
+      limparMarcas();
+      destino = { coluna: id, antes: null };
+    };
+    // só apaga o realce ao sair da coluna de vez, não ao passar por um cartão dentro dela
+    col.ondragleave = e => { if (!col.contains(e.relatedTarget)) col.classList.remove('alvo'); };
+    col.ondrop = e => { e.preventDefault(); col.classList.remove('alvo'); soltar(); };
 
     quadro.append(col);
   });
 }
 
-function cartao(t, i, mostrarEtiqueta) {
+function limparMarcas() {
+  document.querySelectorAll('.solta-antes, .solta-depois')
+    .forEach(e => e.classList.remove('solta-antes', 'solta-depois'));
+}
+
+function cartao(t, i, mostrarEtiqueta, proximo) {
   const el = document.createElement('article');
   el.className = 'cartao' + (t.coluna === 'feito' ? ' feito' : '');
   el.draggable = true;
@@ -612,9 +668,11 @@ function cartao(t, i, mostrarEtiqueta) {
     if (p) corpo.innerHTML = `<span class="etiqueta" style="--cor:${cor(p.id)}">${esc(p.nome)}</span>`;
   }
   const linha = document.createElement('span');
-  linha.contentEditable = 'true';
+  linha.contentEditable = 'false';
   linha.textContent = t.texto;
   linha.onblur = () => {
+    linha.contentEditable = 'false';
+    el.draggable = true;
     const novo = linha.textContent.trim();
     if (!novo) { apagar(t.id); return; }
     if (novo !== t.texto) { t.texto = novo; salvar(); }
@@ -622,8 +680,21 @@ function cartao(t, i, mostrarEtiqueta) {
   linha.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); linha.blur(); } };
   corpo.append(linha);
 
+  const editar = () => {
+    linha.contentEditable = 'true';
+    el.draggable = false;
+    linha.focus();
+    const r = document.createRange();
+    r.selectNodeContents(linha);
+    const sel = getSelection();
+    sel.removeAllRanges();
+    sel.addRange(r);
+  };
+  el.ondblclick = e => { if (!e.target.closest('button')) editar(); };
+
   const setas = document.createElement('div');
   setas.className = 'setas';
+  setas.append(botao('✎', editar));
   if (i > 0) setas.append(botao('‹', () => mover(t.id, COLUNAS[i - 1][0])));
   if (i < COLUNAS.length - 1) setas.append(botao('›', () => mover(t.id, COLUNAS[i + 1][0])));
   const x = botao('×', () => apagar(t.id));
@@ -631,9 +702,37 @@ function cartao(t, i, mostrarEtiqueta) {
   setas.append(x);
 
   el.append(corpo, setas);
-  el.ondragstart = () => { arrastando = t.id; el.classList.add('arrastando'); };
-  el.ondragend = () => el.classList.remove('arrastando');
+
+  el.ondragstart = e => {
+    arrastando = t.id;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', t.id);
+    el.classList.add('arrastando');
+  };
+  el.ondragend = () => {
+    el.classList.remove('arrastando');
+    limparMarcas();
+    document.querySelectorAll('.coluna.alvo').forEach(c => c.classList.remove('alvo'));
+    arrastando = null;
+  };
+  el.ondragover = e => {
+    if (!arrastando || arrastando === t.id) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const r = el.getBoundingClientRect();
+    const emCima = e.clientY < r.top + r.height / 2;
+    limparMarcas();
+    el.classList.add(emCima ? 'solta-antes' : 'solta-depois');
+    destino = { coluna: t.coluna, antes: emCima ? t.id : proximo };
+  };
+  el.ondrop = e => { e.preventDefault(); e.stopPropagation(); soltar(); };
+
   return el;
+}
+
+function soltar() {
+  if (arrastando && destino) mover(arrastando, destino.coluna, destino.antes);
+  destino = null;
 }
 
 function botao(rotulo, acao) {
@@ -643,11 +742,14 @@ function botao(rotulo, acao) {
   return b;
 }
 
-function mover(id, coluna) {
-  const t = dados.tarefas.find(t => t.id === id);
-  if (!t || t.coluna === coluna) return;
+function mover(id, coluna, antes) {
+  if (antes === id) return;
+  const i = dados.tarefas.findIndex(t => t.id === id);
+  if (i < 0) return;
+  const [t] = dados.tarefas.splice(i, 1);
   t.coluna = coluna;
-  dados.tarefas = dados.tarefas.filter(x => x !== t).concat(t);
+  const j = antes ? dados.tarefas.findIndex(x => x.id === antes) : -1;
+  if (j < 0) dados.tarefas.push(t); else dados.tarefas.splice(j, 0, t);
   salvar(); desenhar();
 }
 

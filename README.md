@@ -28,9 +28,14 @@ só pede zoom/rolagem lateral.
 - **Progresso** no widget da direita: cada célula acesa mostra uma fatia
   diferente do espectro.
 - **Nova tarefa**: digite no campo do fim da coluna e tecle Enter.
-- **Mover**: arraste o cartão, ou use as setas `‹ ›` que aparecem nele.
-- **Editar**: clique no texto do cartão e escreva. Apagar o texto todo apaga
-  a tarefa.
+- **Mover**: arraste o cartão. Uma linha azul mostra onde ele vai cair, e dá
+  para reordenar dentro da própria coluna, não só trocar de coluna. Soltar no
+  vazio da coluna joga para o fim. As setas `‹ ›` do cartão fazem o mesmo sem
+  arrastar.
+- **Editar**: duplo clique no cartão, ou o `✎` que aparece ao passar o mouse.
+  O texto só fica editável nesse momento — se ficasse sempre, arrastar pelo
+  texto selecionaria letras em vez de mover o cartão. Apagar o texto todo
+  apaga a tarefa.
 - **Apagar**: o `×` do cartão. Em *Feito* há um `limpar` que varre a coluna.
 - **Todos**: mostra os projetos juntos, cada cartão com a etiqueta do seu.
 
@@ -66,6 +71,11 @@ O `.nojekyll` está aí só para o Pages servir os arquivos como estão.
   girando o matiz; nas tiras dos cartões ele vai em tamanho natural para o
   arco-íris aparecer inteiro, e nas células do medidor cada uma pega uma
   fatia distinta.
+- **Liquid glass**: os painéis são translúcidos com `backdrop-filter`
+  (desfoque + saturação), aresta especular de 1px no topo e brilho interno
+  na base. Para o vidro ter o que distorcer existem manchas holográficas
+  boiando atrás de tudo — sem elas, vidro sobre fundo liso não parece vidro.
+  Os cartões ficam quase opacos de propósito: leitura vem antes do efeito.
 - Fundo, blob, bolhas, wireframe, lens flare, barcode e sparkles são todos
   CSS/SVG — nenhuma imagem para baixar.
 - Animação respeita `prefers-reduced-motion`, e o foco de teclado tem anel
