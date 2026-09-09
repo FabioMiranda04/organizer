@@ -44,6 +44,21 @@ só pede zoom/rolagem lateral.
   de oito cores, na ordem em que os projetos foram criados. Em *Feito* ela
   passa a verde, para a coluna se ler de longe.
 
+## Quando uma tarefa chega em Feito
+
+A tela inteira comemora, de propósito exagerado: tremor, um flash, três ondas
+de choque em cores separadas saindo de onde você soltou o cartão, raios,
+confete de estrelinhas e CDs, e um grito cromado ("FEITO!", "MANDOU BEM!"…)
+entrando em escala. Junto vai um som sintetizado na hora pelo Web Audio —
+nenhum arquivo de áudio no repositório.
+
+O botão `🔊 som` no banner desliga só o áudio; a preferência fica salva junto
+com as tarefas. Quem tem `prefers-reduced-motion` ligado no sistema recebe
+só o som, sem a parte visual.
+
+O flash é **um** e não uma sequência: piscar repetido em tela cheia é gatilho
+de crise fotossensível.
+
 ## Onde os dados ficam
 
 No `localStorage` **deste navegador**, na chave `organizer.kanban.v1`. Nada

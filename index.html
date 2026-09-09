@@ -199,6 +199,7 @@
   @media (prefers-reduced-motion: reduce) {
     .holo, .iris, .pill.on, .cintila, .aura i { animation: none; }
     .fantasma .cartao { animation: none; transform: rotate(-2deg) scale(1.03); }
+    body.tremendo .folha { animation: none; }
   }
 
   /* ---------- barra de projetos ---------- */
@@ -381,6 +382,85 @@
   .nova:focus { outline: none; border-color: var(--azul); box-shadow: 0 0 0 3px rgba(43,127,192,.15); }
   .nova:disabled { opacity: .55; cursor: not-allowed; }
 
+  /* ---------- comemoração ao concluir ---------- */
+  #palco { position: fixed; inset: 0; z-index: 90; pointer-events: none; overflow: hidden; }
+  #palco > * { position: absolute; }
+
+  /* um flash só, nunca pisca-pisca: estroboscópio é gatilho de crise fotossensível */
+  .flash { inset: 0; background: #fff; animation: apagar .28s ease-out forwards; }
+  @keyframes apagar { from { opacity: .92; } to { opacity: 0; } }
+
+  .onda {
+    width: 60px; height: 60px; border-radius: 50%; border: 5px solid currentColor;
+    transform: translate(-50%, -50%) scale(.1);
+    animation: expandir .75s cubic-bezier(.15, .75, .25, 1) forwards;
+  }
+  @keyframes expandir {
+    from { transform: translate(-50%, -50%) scale(.1); opacity: 1; }
+    to   { transform: translate(-50%, -50%) scale(22); opacity: 0; }
+  }
+
+  .raios {
+    width: 300px; height: 300px; border-radius: 50%;
+    transform: translate(-50%, -50%) scale(.15);
+    background: repeating-conic-gradient(from 0deg,
+      rgba(255,255,255,.85) 0deg 2deg, rgba(255,255,255,0) 2deg 9deg);
+    -webkit-mask-image: radial-gradient(circle, #000 8%, rgba(0,0,0,.5) 34%, transparent 62%);
+    mask-image: radial-gradient(circle, #000 8%, rgba(0,0,0,.5) 34%, transparent 62%);
+    animation: estourar .8s cubic-bezier(.12, .8, .3, 1) forwards;
+  }
+  @keyframes estourar {
+    from { transform: translate(-50%, -50%) scale(.15) rotate(0deg); opacity: 1; }
+    to   { transform: translate(-50%, -50%) scale(5) rotate(48deg); opacity: 0; }
+  }
+
+  .confete { width: 15px; height: 15px; animation: esguichar 1s cubic-bezier(.1, .75, .3, 1) forwards; }
+  .confete.estrela {
+    background: #fff;
+    clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
+  }
+  .confete.cd {
+    border-radius: 50%;
+    background: var(--holo-forte);
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,.85);
+  }
+  @keyframes esguichar {
+    from { transform: translate(-50%, -50%) rotate(0deg) scale(.2); opacity: 1; }
+    70%  { opacity: 1; }
+    to   { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy)))
+                      rotate(var(--r)) scale(1.1); opacity: 0; }
+  }
+
+  .slam {
+    left: 50%; top: 44%; white-space: nowrap;
+    font: 400 clamp(56px, 9vw, 118px)/1 var(--display); letter-spacing: -.03em;
+    background: linear-gradient(180deg,
+      #ffffff 0%, #dceefb 9%, #a9c8de 23%, #2f5772 41%,
+      #0b2233 50%, #4a7b99 55%, #dff2ff 63%, #ffffff 70%,
+      #b9d3e4 84%, #5f88a3 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    -webkit-text-stroke: 2px rgba(255,255,255,.9);
+    filter: drop-shadow(0 0 2px rgba(10,40,70,.6)) drop-shadow(0 0 18px rgba(120,190,255,.9))
+            drop-shadow(0 8px 16px rgba(10,50,80,.5));
+    animation: bater 1.05s cubic-bezier(.16, 1.5, .38, 1) forwards;
+  }
+  @keyframes bater {
+    from { transform: translate(-50%, -50%) scale(3.4) rotate(-16deg); opacity: 0; filter: blur(10px); }
+    20%  { transform: translate(-50%, -50%) scale(1)   rotate(-6deg);  opacity: 1; filter: blur(0); }
+    72%  { transform: translate(-50%, -50%) scale(1.04) rotate(-6deg); opacity: 1; }
+    to   { transform: translate(-50%, -50%) scale(1.6) rotate(-6deg);  opacity: 0; }
+  }
+
+  /* só translação: a folha é toda vidro, e girar/escalar backdrop-filter borra */
+  body.tremendo .folha { animation: tremer .58s cubic-bezier(.36, .07, .19, .97); }
+  @keyframes tremer {
+    10%, 90% { transform: translate(-7px, 4px); }
+    20%, 80% { transform: translate(10px, -5px); }
+    30%, 50%, 70% { transform: translate(-14px, 6px); }
+    40%, 60% { transform: translate(14px, -6px); }
+    100% { transform: none; }
+  }
+
   /* ---------- rodapé ---------- */
   .rodape { display: flex; align-items: center; gap: 12px; margin-top: 20px; padding: 0 2px; }
   .rodape .linha { flex: 1; height: 1px; background: repeating-linear-gradient(90deg, var(--borda-forte) 0 2px, transparent 2px 6px); }
@@ -409,6 +489,7 @@
       <div class="backup">
         <button class="pill" id="exportar">exportar</button>
         <button class="pill" id="importar">importar</button>
+        <button class="pill" id="som" title="som da comemoração"></button>
         <span class="hud" id="carimbo"></span>
       </div>
     </div>
@@ -462,6 +543,8 @@
   </div>
 </div>
 
+<div id="palco" aria-hidden="true"></div>
+
 <input type="file" id="arquivo" accept="application/json" hidden>
 
 <script>
@@ -476,6 +559,10 @@ const CELULAS = 24;
 let dados = carregar();
 let arrastando = null;
 let destino = null;
+let ponteiro = { x: innerWidth / 2, y: innerHeight / 2 };
+let audio = null;
+
+addEventListener('pointermove', e => { ponteiro = { x: e.clientX, y: e.clientY }; }, { passive: true });
 
 function carregar() {
   try {
@@ -506,6 +593,71 @@ function visiveis() {
   document.getElementById('carimbo').textContent =
     `[ ${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()} ]`;
 })();
+
+/* ---------- comemoração ---------- */
+const GRITOS = ['FEITO!', 'ISSO!', 'MANDOU BEM!', 'CONCLUÍDO!', 'BOA!'];
+
+function som() {
+  if (dados.som === false) return;
+  try {
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    const t = audio.currentTime;
+    const sopro = (tipo, f0, f1, ini, dur, vol) => {
+      const o = audio.createOscillator(), g = audio.createGain();
+      o.type = tipo;
+      o.frequency.setValueAtTime(f0, t + ini);
+      o.frequency.exponentialRampToValueAtTime(f1, t + ini + dur);
+      g.gain.setValueAtTime(.0001, t + ini);
+      g.gain.exponentialRampToValueAtTime(vol, t + ini + .015);
+      g.gain.exponentialRampToValueAtTime(.0001, t + ini + dur);
+      o.connect(g).connect(audio.destination);
+      o.start(t + ini);
+      o.stop(t + ini + dur + .02);
+    };
+    sopro('sawtooth', 120, 1600, 0, .22, .22);          // subida
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) =>  // acorde de vitória
+      sopro('square', f, f, .18 + i * .05, .32, .09));
+  } catch {}
+}
+
+function festejar() {
+  const palco = document.getElementById('palco');
+  palco.innerHTML = '';
+  som();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const { x, y } = ponteiro;
+  const peca = (classe, estilo) => {
+    const d = document.createElement('div');
+    d.className = classe;
+    d.style.cssText = estilo;
+    palco.append(d);
+    return d;
+  };
+
+  peca('flash', '');
+  ['#ffffff', '#ff4df0', '#4dd8ff'].forEach((c, i) =>
+    peca('onda', `left:${x}px;top:${y}px;color:${c};animation-delay:${i * 60}ms`));
+  peca('raios', `left:${x}px;top:${y}px`);
+
+  for (let i = 0; i < 34; i++) {
+    const ang = Math.random() * Math.PI * 2;
+    const dist = 140 + Math.random() * 340;
+    const tam = 9 + Math.random() * 16;
+    peca('confete ' + (i % 3 ? 'estrela' : 'cd'),
+      `left:${x}px;top:${y}px;width:${tam}px;height:${tam}px;` +
+      `--dx:${(Math.cos(ang) * dist).toFixed(0)}px;--dy:${(Math.sin(ang) * dist - 60).toFixed(0)}px;` +
+      `--r:${Math.round(Math.random() * 900 - 450)}deg;` +
+      `animation-delay:${Math.round(Math.random() * 120)}ms`);
+  }
+
+  const grito = peca('slam', '');
+  grito.textContent = GRITOS[Math.floor(Math.random() * GRITOS.length)];
+
+  document.body.classList.add('tremendo');
+  setTimeout(() => document.body.classList.remove('tremendo'), 620);
+  setTimeout(() => { palco.innerHTML = ''; }, 1500);
+}
 
 /* ---------- projetos ---------- */
 function campoChip(valor, aoConfirmar) {
@@ -802,10 +954,12 @@ function mover(id, coluna, antes) {
   const i = dados.tarefas.findIndex(t => t.id === id);
   if (i < 0) return;
   const [t] = dados.tarefas.splice(i, 1);
+  const concluiu = coluna === 'feito' && t.coluna !== 'feito';
   t.coluna = coluna;
   const j = antes ? dados.tarefas.findIndex(x => x.id === antes) : -1;
   if (j < 0) dados.tarefas.push(t); else dados.tarefas.splice(j, 0, t);
   salvar(); desenhar();
+  if (concluiu) festejar();
 }
 
 function apagar(id) {
@@ -823,6 +977,10 @@ document.getElementById('exportar').onclick = () => {
   URL.revokeObjectURL(url);
 };
 
+const botaoSom = document.getElementById('som');
+function pintarSom() { botaoSom.textContent = dados.som === false ? '🔇 mudo' : '🔊 som'; }
+botaoSom.onclick = () => { dados.som = dados.som === false; salvar(); pintarSom(); };
+
 document.getElementById('importar').onclick = () => document.getElementById('arquivo').click();
 document.getElementById('arquivo').onchange = async e => {
   const f = e.target.files[0];
@@ -839,7 +997,7 @@ document.getElementById('arquivo').onchange = async e => {
   e.target.value = '';
 };
 
-function desenhar() { desenharProjetos(); desenharMedidor(); desenharQuadro(); }
+function desenhar() { desenharProjetos(); desenharMedidor(); desenharQuadro(); pintarSom(); }
 desenhar();
 </script>
 </body>
