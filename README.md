@@ -2,12 +2,14 @@
 
 Kanban para anotar as tarefas dos meus projetos.
 
+> Retomando o projeto? Comece pelo `CLAUDE.md` (regras e armadilhas) e por
+> `docs/ESTADO-DO-PROJETO.md` (o que está pronto e o que está aberto).
+
 Estética Y2K: estrutura de página de 2003 — pills envidraçadas, barcode,
 painéis com barra de título — com cromo, gradiente holográfico e sparkles por
 cima.
 
-**No ar:** https://fabiomiranda04.github.io/organizer/ — depois de ligar o
-Pages uma vez (veja *Publicação*).
+**No ar:** https://fabiomiranda04.github.io/organizer/
 
 Um arquivo. Sem build, sem dependência, sem servidor: o `index.html` sozinho
 já é o app — abre direto no navegador se você quiser.
@@ -125,15 +127,13 @@ com tudo, importar substitui o que está salvo. É o backup.
 
 ## Publicação
 
-GitHub Pages servindo a raiz da `main`. Ligar isso é um passo manual e único
-— só o dono do repositório pode criar o site, nem o token do Actions
-consegue:
+GitHub Pages **já ligado**, servindo a raiz da `main`: todo push republica
+sozinho, sem build e sem workflow. O `.nojekyll` está aí só para o Pages
+servir os arquivos como estão.
 
-> **Settings → Pages → Source: _Deploy from a branch_ → Branch: `main` /
-> `(root)` → Save**
-
-Depois disso todo push na `main` republica sozinho, sem build e sem workflow.
-O `.nojekyll` está aí só para o Pages servir os arquivos como estão.
+(Se um dia precisar religar: **Settings → Pages → Source: _Deploy from a
+branch_ → Branch: `main` / `(root)` → Save**. É passo manual porque só o dono
+do repositório pode criar o site — nem o token do Actions consegue.)
 
 ## Trocar de painel
 
